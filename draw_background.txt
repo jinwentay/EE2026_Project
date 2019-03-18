@@ -45,7 +45,7 @@ module Draw_Background(
 || (VGA_VERT_COORD == Y_axis + Y_interval * 4) || (VGA_VERT_COORD == Y_axis - Y_interval * 2) || (VGA_VERT_COORD == Y_axis + Y_interval * 8)
 || (VGA_VERT_COORD == Y_axis + Y_interval * 5) || (VGA_VERT_COORD == Y_axis - Y_interval * 3) || (VGA_VERT_COORD == Y_axis + Y_interval * 9)
 || (VGA_VERT_COORD == Y_axis + Y_interval * 6) || (VGA_VERT_COORD == Y_axis - Y_interval * 4) || (VGA_VERT_COORD == Y_axis + Y_interval * 10)
-|| (VGA_VERT_COORD == Y_axis + Y_interval * 11) || /*(VGA_VERT_COORD == 471) || (VGA_VERT_COORD == 473) || (VGA_VERT_COORD == 472)*/;
+|| (VGA_VERT_COORD == Y_axis + Y_interval * 11) /*|| (VGA_VERT_COORD == 471) || (VGA_VERT_COORD == 473) || (VGA_VERT_COORD == 472)*/;
 // Using the gridline example, insert your code below to draw ticks on the x-axis and y-axis.
     wire Condition_For_Ticks = (VGA_HORZ_COORD == X_axis + 16) || (VGA_VERT_COORD == Y_axis + 8) ;
 
