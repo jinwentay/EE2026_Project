@@ -22,26 +22,40 @@
 
 
 module Draw_Background(
-    input [11:0] VGA_HORZ_COORD,
-    input [11:0] VGA_VERT_COORD,
+    //input CLOCK,
+    input [11:0] VGA_HORZ_COORD, //0 -> 1200 used to create vertical line
+    input [11:0] VGA_VERT_COORD, //-6 -> 954 used to create horizontal line
     output [3:0] VGA_Red_Grid,
     output [3:0] VGA_Green_Grid,
     output [3:0] VGA_Blue_Grid
     );
-    
+   parameter X_axis = 800, Y_axis = 250; 
+   parameter X_interval = 80, Y_interval = 64;
+   //reg [20:0] counter = 0;
 // The code below draws two grid lines. Modify the codes to draw more grid lines. 
-    wire Condition_For_Grid = (VGA_HORZ_COORD == 800) ||  (VGA_VERT_COORD == 250) ;
+ wire Condition_For_Grid = (VGA_HORZ_COORD == X_axis) || (VGA_HORZ_COORD == X_axis - X_interval) || (VGA_HORZ_COORD == X_axis - X_interval * 2) 
+|| (VGA_HORZ_COORD == X_axis - X_interval * 3) || (VGA_HORZ_COORD == X_axis + X_interval) || (VGA_HORZ_COORD == X_axis - X_interval * 7) 
+|| (VGA_HORZ_COORD == X_axis - X_interval * 4) || (VGA_HORZ_COORD == X_axis + X_interval * 2) || (VGA_HORZ_COORD == X_axis - X_interval * 8) 
+|| (VGA_HORZ_COORD == X_axis - X_interval * 5) || (VGA_HORZ_COORD == X_axis + X_interval * 3) || (VGA_HORZ_COORD == X_axis - X_interval * 9)
+|| (VGA_HORZ_COORD == X_axis - X_interval * 6) || (VGA_HORZ_COORD == X_axis + X_interval * 4) || (VGA_HORZ_COORD == X_axis - X_interval * 10)
+|| (VGA_HORZ_COORD == X_axis + X_interval * 5)  //remove
 
-
+|| (VGA_VERT_COORD == Y_axis) || (VGA_VERT_COORD == Y_axis + Y_interval) || (VGA_VERT_COORD == Y_axis + Y_interval * 2)
+|| (VGA_VERT_COORD == Y_axis + Y_interval * 3) || (VGA_VERT_COORD == Y_axis - Y_interval) || (VGA_VERT_COORD == Y_axis + Y_interval * 7)
+|| (VGA_VERT_COORD == Y_axis + Y_interval * 4) || (VGA_VERT_COORD == Y_axis - Y_interval * 2) || (VGA_VERT_COORD == Y_axis + Y_interval * 8)
+|| (VGA_VERT_COORD == Y_axis + Y_interval * 5) || (VGA_VERT_COORD == Y_axis - Y_interval * 3) || (VGA_VERT_COORD == Y_axis + Y_interval * 9)
+|| (VGA_VERT_COORD == Y_axis + Y_interval * 6) || (VGA_VERT_COORD == Y_axis - Y_interval * 4) || (VGA_VERT_COORD == Y_axis + Y_interval * 10)
+|| (VGA_VERT_COORD == Y_axis + Y_interval * 11) || /*(VGA_VERT_COORD == 471) || (VGA_VERT_COORD == 473) || (VGA_VERT_COORD == 472)*/;
 // Using the gridline example, insert your code below to draw ticks on the x-axis and y-axis.
-    wire Condition_For_Ticks;
+    wire Condition_For_Ticks = (VGA_HORZ_COORD == X_axis + 16) || (VGA_VERT_COORD == Y_axis + 8) ;
 
 
     
 // Please modify below codes to change the background color and to display ticks defined above
-    assign VGA_Red_Grid = Condition_For_Grid ? 4'h0 : 4'h0 ;
+    assign VGA_Red_Grid = Condition_For_Ticks ? 4'hF : 4'h0 ;
     assign VGA_Green_Grid = Condition_For_Grid ? 4'hD : 4'h0 ;
     assign VGA_Blue_Grid = Condition_For_Grid ? 4'h0 : 4'h0 ;
+    
                             // if true, a red pixel is put at coordinates (VGA_HORZ_COORD, VGA_VERT_COORD), 
      
 endmodule
