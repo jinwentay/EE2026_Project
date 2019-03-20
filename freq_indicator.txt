@@ -1,0 +1,88 @@
+`timescale 1ns / 1ps
+//////////////////////////////////////////////////////////////////////////////////
+// Company: 
+// Engineer: 
+// 
+// Create Date: 20.03.2019 15:40:04
+// Design Name: 
+// Module Name: freq_indicator
+// Project Name: 
+// Target Devices: 
+// Tool Versions: 
+// Description: 
+// 
+// Dependencies: 
+// 
+// Revision:
+// Revision 0.01 - File Created
+// Additional Comments:
+// 
+//////////////////////////////////////////////////////////////////////////////////
+
+
+module freq_indicator(
+    input [11:0] audio,
+    input clk20hz,
+    output reg [8:0] led,
+    output reg [6:0] seg,
+    output an
+    );
+    assign an = 0;
+    reg [11:0] COUNT = 0;
+    reg [11:0] max = 0;
+    always @ (posedge clk20hz) begin
+        COUNT <= (COUNT > 2000) ? 0:(COUNT + 1);
+        if (audio > max) begin
+            max <= audio;
+        end
+        
+        if (COUNT == 2000) begin
+            
+            if (max < 230)
+            begin
+                led <= 9'b000000001;
+                seg <= 7'b1111001;//1
+            end
+            else if (max < 460)
+            begin
+                led <= 9'b000000010;
+                seg <= 7'b0100100;//2
+            end
+            else if (max < 690)
+            begin
+                led <= 9'b000000100;
+                seg <= 7'b0110000;//3
+            end                
+            else if (max < 920)
+            begin
+                led <= 9'b000001000;
+                seg <= 7'b0011001;//4
+            end
+            else if (max < 1150)
+            begin
+                led <= 9'b000010000;
+                seg <= 7'b0010010;//5
+            end
+            else if (max < 1380)
+            begin
+                led <= 9'b000100000;
+                seg <= 7'b0000010;//6
+            end
+            else if (max < 1610)
+            begin
+                led <= 9'b001000000;
+                seg <= 7'b1111000;//7
+            end
+            else if (max < 1840)
+            begin
+                led <= 9'b010000000;
+                seg <= 7'b0000000;//8
+            end
+            else if (max < 2070)
+            begin
+                led <= 9'b100000000;
+                seg <= 7'b0010000;//9
+            end                    
+        end
+    end
+endmodule
