@@ -19,7 +19,11 @@ module Voice_Scope_TOP(
     output [3:0] VGA_BLUE,
     
     output VGA_VS,          // horizontal & vertical sync outputs to VGA connector
-    output VGA_HS
+    output VGA_HS,
+    
+    output [8:0] led,
+    output [6:0] seg,
+    output an
     );
        
    
@@ -39,6 +43,7 @@ module Voice_Scope_TOP(
 // Please instantiate the voice capturer module below
    
     Voice_Capturer two(CLK, clk_20hz, J_MIC3_Pin3, J_MIC3_Pin1, J_MIC3_Pin4, MIC_in);
+    freq_indicator freq(MIC_in, clk_20hz, led, seg, an);
 
 //-----------------------------------------------------------------------------
 //                  STUDENT B - VGA
