@@ -4,8 +4,15 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 module Draw_Waveform(
+    input [3:0] RED_GRAPH,
+    input [3:0] GREEN_GRAPH,
+    input [3:0] BLUE_GRAPH,
+    input [3:0] RED_BACK,
+    input [3:0] GREEN_BACK,
+    input [3:0] BLUE_BACK,
     input clk_sample, //20kHz clock
-
+    input sw1,
+    input sw2,
     input [9:0] wave_sample,
     input [11:0] VGA_HORZ_COORD,
     input [11:0] VGA_VERT_COORD,
@@ -18,17 +25,21 @@ module Draw_Waveform(
     //There are 1280 points and each point can range from 0 to 1023. 
     reg [9:0] Sample_Memory[1279:0];
     reg [10:0] i = 0;
+    reg [9:0] invert_Sample_Memory[1279:0];
+    reg [10:0] j = 0;
     
     //Each wave_sample is displayed on the screen from left to right. 
     always @ (posedge clk_sample) begin
-        i = (i==1279) ? 0 : i + 1;
-        Sample_Memory[i] <= wave_sample;              
+        if (!sw1) begin
+            i = (i==1279) ? 0 : i + 1;
+            Sample_Memory[i] <= wave_sample;
+            j = (j==1279) ? 0 : j + 1;
+            invert_Sample_Memory[j] <= ~wave_sample;
+        end              
     end
      
 
-    assign VGA_Red_waveform =   ((VGA_HORZ_COORD < 1280) && (VGA_VERT_COORD == (1024 - Sample_Memory[VGA_HORZ_COORD]))) ? 4'hf : 0;
-    assign VGA_Green_waveform = ((VGA_HORZ_COORD < 1280) && (VGA_VERT_COORD == (1024 - Sample_Memory[VGA_HORZ_COORD]))) ? 4'hf : 0;
-    assign VGA_Blue_waveform =  ((VGA_HORZ_COORD < 1280) && (VGA_VERT_COORD == (1024 - Sample_Memory[VGA_HORZ_COORD]))) ? 4'hf : 0 ;
-
-    
-endmodule
+   assign VGA_Red_waveform =   ((VGA_HORZ_COORD < 1280) && ((VGA_VERT_COORD <= (1024 - Sample_Memory[VGA_HORZ_COORD])) && (VGA_VERT_COORD >= (1024 - invert_Sample_Memory[VGA_HORZ_COORD])) || (VGA_VERT_COORD >= (1024 - Sample_Memory[VGA_HORZ_COORD])) && (VGA_VERT_COORD <= (1024 - invert_Sample_Memory[VGA_HORZ_COORD])))) ? (sw2 ? RED_GRAPH : ((VGA_HORZ_COORD / (13)) % 14 + 2)) : RED_BACK;
+   assign VGA_Green_waveform = ((VGA_HORZ_COORD < 1280) && ((VGA_VERT_COORD <= (1024 - Sample_Memory[VGA_HORZ_COORD])) && (VGA_VERT_COORD >= (1024 - invert_Sample_Memory[VGA_HORZ_COORD])) || (VGA_VERT_COORD >= (1024 - Sample_Memory[VGA_HORZ_COORD])) && (VGA_VERT_COORD <= (1024 - invert_Sample_Memory[VGA_HORZ_COORD])))) ? (sw2 ? GREEN_GRAPH : ((VGA_HORZ_COORD / (7)) % 14 + 2)) : GREEN_BACK;
+   assign VGA_Blue_waveform =  ((VGA_HORZ_COORD < 1280) && ((VGA_VERT_COORD <= (1024 - Sample_Memory[VGA_HORZ_COORD])) && (VGA_VERT_COORD >= (1024 - invert_Sample_Memory[VGA_HORZ_COORD])) || (VGA_VERT_COORD >= (1024 - Sample_Memory[VGA_HORZ_COORD])) && (VGA_VERT_COORD <= (1024 - invert_Sample_Memory[VGA_HORZ_COORD])))) ? (sw2 ? BLUE_GRAPH : ((VGA_HORZ_COORD / (11))) % 14 + 2) : BLUE_BACK;
+  endmodule
