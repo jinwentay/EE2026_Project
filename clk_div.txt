@@ -21,12 +21,12 @@
 
 module clk_div(
     output reg clk_20hz = 0,
+    input [30:0] period,
     input CLOCK
     );
-    reg [11:0] count = 0;
+    reg [30:0] count = 0;
     always @ (posedge CLOCK) begin
-        count <= (count == 2499)? 0 : count + 1;
+        count <= (count == period)? 0 : count + 1;
         clk_20hz <= (count == 0) ? ~clk_20hz : clk_20hz;
     end
-     
 endmodule
