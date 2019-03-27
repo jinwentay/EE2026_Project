@@ -24,6 +24,7 @@ module Voice_Capturer(
     output clk_samp,            // J_MIC3_Pin1
     output reg sclk,            // J_MIC3_Pin4, MIC3 serial clock
     output reg [11:0]sample     // 12-bit audio sample data
+    //output reg [15:0] LED = 0
     );
     
     reg [11:0]count2 = 0;
@@ -37,16 +38,37 @@ module Voice_Capturer(
     
     //Creating SPI clock signals
     always @ (posedge CLK) begin
-        count2 <= (cs == 0) ? count2 + 1 : 0;
+        count2 <= (cs == 0) ? count2 + 1 : 0; //every 50 counts sclk is toggled, regular intervals
         sclk <= (count2 == 50 || count2 == 100 || count2 == 150 || count2 == 200 || count2 == 250 || count2 == 300 || count2 == 350 || count2 == 400 || count2 == 450 || count2 == 500 || count2 == 550 || count2 == 600 || count2 == 650 || count2 == 700 || count2 == 750 || count2 == 800 || count2 == 850 || count2 == 900 || count2 == 950 || count2 == 1000 ||count2 == 1050 || count2 == 1100 || count2 == 1150 || count2 == 1200 || count2 == 1250 || count2 == 1300 || count2 == 1350 || count2 == 1400 || count2 == 1450 || count2 == 1500 || count2 == 1550 || count2 == 1600) ?  ~sclk  : sclk ;
     end
     
     always @ (negedge sclk) begin
-        temp <= temp<<1 | MISO;
+        temp <= temp<<1 | MISO; //giving data from mic input, changes last bit of waveform to MISO and moves wave with sclk time
+    end
+    wire reset_pulse, reset, slow_clock;
+    wire peak_counter;
+    reg [31:0] freq = 0;    
+    clk_div seven(reset_pulse, 1000000, CLK); //reset has a rising edge once every 20ms, resets posedge_count every 20ms
+ /*   clk_div eight(slow_clock, 20000000, CLK); //reset has a rising edge once every 20ms, resets posedge_count every 20ms
+    spc spc_(CLK, reset_pulse, reset);
+    assign peak_counter = (temp > 530); //was 473, //3000 v effective, //530 around origin x axis of wave.
+ 
+    always @ (negedge reset, posedge peak_counter) begin //cannot put MISO in posedge for some reason.//attempting to get frequncy   -->     define frequency: 1/period. 1/period : 2 x rising edge and falling edge
+        freq <= (reset == 1) ? 0 : freq + 1;
+        LED[15] <= (reset == 1); 
+    end
+    
+    always @ (posedge slow_clock) begin  //led should change ever 0.33s
+        LED[12:0] <= freq[12:0];
     end
 
+    always @ (posedge peak_counter) begin
+        freq = freq + 1;
+        LED <= freq >> 15;
+    end    */
+    
     always @ (posedge cs) begin
-        sample <= temp[11:0];
+        sample <= temp[11:0]; //update sample at a rate or clk_samp
     end
     
 endmodule
