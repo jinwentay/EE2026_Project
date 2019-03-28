@@ -6,7 +6,6 @@
 // AY1819 Semester 1
 // Project: Voice Scope
 //////////////////////////////////////////////////////////////////////////////////
-
 module Voice_Scope_TOP(
     input CLK,
     input [14:0] sw,
@@ -26,9 +25,9 @@ module Voice_Scope_TOP(
     
     output VGA_VS,          // horizontal & vertical sync outputs to VGA connector
     output VGA_HS,
-    output [8:0] led,
+    output [15:0] led,
     output [6:0] seg,
-    output an
+    output [3:0] an
     );
        
    
@@ -39,7 +38,7 @@ module Voice_Scope_TOP(
 //-----------------------------------------------------------------------------
 
     wire clk_20hz;   
-    wire [11:0] MIC_in;       
+    wire [11:0] MIC_in;   
     
 // Please create a clock divider module to generate a 20kHz clock signal. 
 // Instantiate it below
@@ -84,7 +83,7 @@ module Voice_Scope_TOP(
     
     Draw_Waveform five(RED_GRAPH[3:0], GREEN_GRAPH[3:0], BLUE_GRAPH[3:0], RED_BACK[3:0], GREEN_BACK[3:0], BLUE_BACK[3:0],clk_20hz, sw[0], sw[1], wave_sample, VGA_HORZ_COORD, VGA_VERT_COORD, VGA_Red_waveform, VGA_Green_waveform, VGA_Blue_waveform);
     always @ (posedge CLK) begin
-    if (sw[2] & sw[3]) begin
+    if (~sw[2] & ~sw[3] & sw[4] & ~sw[5]) begin
         if (spoUp & btnL & ~spoRight & ~btnR & ~spoCentre & ~btnC)
             RED_AXIS <= (RED_AXIS == 15) ? RED_AXIS : RED_AXIS + 1;
         else if (spoUp & btnR & ~spoLeft & ~btnL & ~spoCentre & ~btnC)
@@ -98,7 +97,7 @@ module Voice_Scope_TOP(
         else if (spoDown & btnC & ~spoRight & ~btnR & ~spoLeft & ~btnL)
             GREEN_AXIS <= (GREEN_AXIS == 0) ? 0 : GREEN_AXIS - 1;
     end
-    else if (~sw[2] & sw[3]) begin
+    else if (~sw[2] & sw[3] & ~sw[4] & ~sw[5]) begin
         if (spoUp & btnL & ~spoRight & ~btnR & ~spoCentre & ~btnC)
             RED_BACK <= (RED_BACK == 15) ? RED_BACK : RED_BACK + 1;
         else if (spoUp & btnR & ~spoLeft & ~btnL & ~spoCentre & ~btnC)
@@ -112,7 +111,7 @@ module Voice_Scope_TOP(
         else if (spoDown & btnC & ~spoRight & ~btnR & ~spoLeft & ~btnL)
             GREEN_BACK <= (GREEN_BACK == 0) ? 0 : GREEN_BACK - 1;
     end
-    else if (sw[2] & ~sw[3]) begin
+    else if (sw[2] & ~sw[3] & ~sw[4] & ~sw[5]) begin
         if (spoUp & btnL & ~spoRight & ~btnR & ~spoCentre & ~btnC)
             RED_GRAPH <= (RED_GRAPH == 15) ? RED_GRAPH : RED_GRAPH + 1;
         else if (spoUp & btnR & ~spoLeft & ~btnL & ~spoCentre & ~btnC)
@@ -126,7 +125,7 @@ module Voice_Scope_TOP(
         else if (spoDown & btnC & ~spoRight & ~btnR & ~spoLeft & ~btnL)
             GREEN_GRAPH <= (GREEN_GRAPH == 0) ? 0 : GREEN_GRAPH - 1;
     end
-    else if (~sw[2] & ~sw[3]) begin
+    else if (~sw[2] & ~sw[3] & ~sw[4] & sw[5]) begin
         RED_GRAPH <= 0;
         GREEN_GRAPH <= 0;
         BLUE_GRAPH <= 0;
