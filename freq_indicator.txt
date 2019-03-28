@@ -28,7 +28,6 @@ module freq_indicator(
     output reg [3:0] an
     );
     reg flag;
-   // reg [15:0] first;
     reg [10:0] temp = 0;
     reg [11:0] COUNT = 0;
     reg [11:0] max = 0;
@@ -75,21 +74,21 @@ module freq_indicator(
             an <= 4'b1101;
         end     
         if (COUNT == 2000) begin
-            if (max < 2000)
+            if (max < 2090)
             begin
                 led <= 1;
                 seg <= 7'b1111001;//1
                 an <= 4'b1110;
                 flag <= 0;
             end
-            else if (max < 2050)
+            else if (max < 2100)
             begin
                 led <= 3;
                 seg <= 7'b0100100;//2
                 an <= 4'b1110;
                 flag <= 0;
             end
-            else if (max < 2100)
+            else if (max < 2125)
             begin
                 led <= 7;
                 seg <= 7'b0110000;//3
